@@ -11,6 +11,7 @@ import poRoutes from "./routes/poRoutes.js";
 import moveRoutes from "./routes/moveRoutes.js";
 import itempoRoutes from "./routes/itempoRoutes.js";
 import loRoutes from "./routes/loRoutes.js";
+import itemloRoutes from "./routes/itemloRoutes.js";
 
 const app = express();
 const PORT = process.env.PORT || 3089;
@@ -43,6 +44,7 @@ const init = async () => {
         app.use("/api/v1", moveRoutes);
         app.use("/api/v1", itempoRoutes);
         app.use("/api/v1", loRoutes);
+        app.use("/api/v1", itemloRoutes);
        
 
         app.listen(PORT, () => {
