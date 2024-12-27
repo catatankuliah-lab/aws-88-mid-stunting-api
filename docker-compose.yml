@@ -1,10 +1,14 @@
-version: '3'
+version: '3.8'
+
 services:
-  express-api:
-    build: .
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
     ports:
       - "3089:3089"
+    env_file:
+      - .env
     volumes:
-      - .:/usr/src/app  # Mount folder lokal ke dalam container
-    environment:
-      NODE_ENV: development
+      - .:/usr/src/app
+    command: ["npm", "start"]

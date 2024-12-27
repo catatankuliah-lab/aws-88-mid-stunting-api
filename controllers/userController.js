@@ -45,7 +45,7 @@ export const getUserById = async (req, res) => {
 };
 
 export const createUser = async (req, res) => {
-  const { id_role, id_kantor, id_gudang, nama_user, username, password, status_user } =
+  const { id_role, id_kantor, username, password, nama_user } =
     req.body;
 
   try {
@@ -54,16 +54,14 @@ export const createUser = async (req, res) => {
     await User.addUser(
       id_role,
       id_kantor,
-      id_gudang,
-      nama_user,
       username,
       hashedPassword,
-      status_user
+      nama_user
     );
 
     res.status(201).json({
       status: "success",
-      data: { id_role, id_kantor, id_gudang, nama_user, username, password, status_user },
+      data: { id_role, id_kantor, username, nama_user },
       message: "User created successfully.",
     });
   } catch (error) {

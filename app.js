@@ -1,12 +1,64 @@
-// app.js
-import express from 'express';
+import express from "express";
+import cors from "cors";
+import sequelize from "./config/config.js";
+import userRoutes from "./routes/userRoutes.js";
+
 const app = express();
-const port = 3089;  // Ganti port ke 3089
+const PORT = process.env.PORT || 3089;
 
-app.get('/', (req, res) => {
-    res.send('Hello from Express.js API on port 3089!');
-});
+app.use(
+    cors({
+        origin: "http://localhost:5173",
+        methods: ["GET", "POST", "PUT", "DELETE"],
+        allowedHeaders: ["Content-Type", "Authorization"],
+    })
+);
 
-app.listen(port, () => {
-    console.log(`Server is running on http://localhost:${port}`);
-});
+app.use(express.json());
+
+const init = async () => {
+    try {
+        await sequelize.authenticate();
+        console.log("Connected to the database.");
+        await sequelize.sync();
+        console.log("Database & tables created!");
+        // app.use("/api", authRoutes);
+        // app.use("/api", roleRoutes);
+        app.use("/api/v1", userRoutes);
+        // app.use("/api", kantorRoutes);
+        // app.use("/api", provinsiRoutes);
+        // app.use("/api", kabupatenkotaRoutes);
+        // app.use("/api", kecamatanRoutes);
+        // app.use("/api", desaKelurahanRoutes);
+        // app.use("/api", gudangRoutes);
+        // app.use("/api", januariDttRoutes);
+        // app.use("/api", alokasiRoutes);
+        // app.use("/api", januariItemRencanaSalurRoutes);
+        // app.use("/api", januariRencanaSalurRoutes);
+        // app.use("/api", januariKpmRoutes);
+        // app.use("/api", januariLogRencanaSalurRoutes);
+        // app.use("/api", januariLogItemRencanaSalurRoutes);
+        // app.use("/api", januariDoRoutes);
+        // app.use("/api", januariLogDoRoutes);
+        // app.use("/api", januariLoRoutes);
+        // app.use("/api", januariLogLoRoutes);
+        // app.use("/api", januariItemLoRoutes);
+        // app.use("/api", januariBastRoutes);
+        // app.use("/api", januariBastPenggantiRoutes);
+        // app.use("/api", januariSptjmRoutes);
+        // app.use("/api", januariItemSptjmRoutes);
+        // app.use("/api", januariLogSptjmRoutes);
+        // app.use("/api", januariLogItemSptjmRoutes);
+        // app.use("/api", januariPenyaluranRoutes);
+
+        // app.use("/api", januariPDFDORoutes);
+
+        app.listen(PORT, () => {
+            console.log(`Server is running on port ${PORT}`);
+        });
+    } catch (error) {
+        console.error("Unable to connect to the database:", error);
+    }
+};
+
+init();
