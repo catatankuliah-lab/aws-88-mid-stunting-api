@@ -7,6 +7,10 @@ import kabupatenkotaRoutes from "./routes/kabupatenkotaRoutes.js";
 import kecamatanRoutes from "./routes/kecamatanRoutes.js";
 import desaKelurahanRoutes from "./routes/desaKelurahanRoutes.js";
 import kantorRoutes from "./routes/kantorRoutes.js";
+import poRoutes from "./routes/poRoutes.js";
+import moveRoutes from "./routes/moveRoutes.js";
+import itempoRoutes from "./routes/itempoRoutes.js";
+import loRoutes from "./routes/loRoutes.js";
 
 const app = express();
 const PORT = process.env.PORT || 3089;
@@ -35,28 +39,11 @@ const init = async () => {
         app.use("/api/v1", kabupatenkotaRoutes);
         app.use("/api/v1", kecamatanRoutes);
         app.use("/api/v1", desaKelurahanRoutes);
-        // app.use("/api", gudangRoutes);
-        // app.use("/api", januariDttRoutes);
-        // app.use("/api", alokasiRoutes);
-        // app.use("/api", januariItemRencanaSalurRoutes);
-        // app.use("/api", januariRencanaSalurRoutes);
-        // app.use("/api", januariKpmRoutes);
-        // app.use("/api", januariLogRencanaSalurRoutes);
-        // app.use("/api", januariLogItemRencanaSalurRoutes);
-        // app.use("/api", januariDoRoutes);
-        // app.use("/api", januariLogDoRoutes);
-        // app.use("/api", januariLoRoutes);
-        // app.use("/api", januariLogLoRoutes);
-        // app.use("/api", januariItemLoRoutes);
-        // app.use("/api", januariBastRoutes);
-        // app.use("/api", januariBastPenggantiRoutes);
-        // app.use("/api", januariSptjmRoutes);
-        // app.use("/api", januariItemSptjmRoutes);
-        // app.use("/api", januariLogSptjmRoutes);
-        // app.use("/api", januariLogItemSptjmRoutes);
-        // app.use("/api", januariPenyaluranRoutes);
-
-        // app.use("/api", januariPDFDORoutes);
+        app.use("/api/v1", poRoutes);
+        app.use("/api/v1", moveRoutes);
+        app.use("/api/v1", itempoRoutes);
+        app.use("/api/v1", loRoutes);
+       
 
         app.listen(PORT, () => {
             console.log(`Server is running on port ${PORT}`);

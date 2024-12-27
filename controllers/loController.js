@@ -1,0 +1,174 @@
+import LO from "../models/loModels.js";
+
+// Get all LOs
+export const getAllLO = async (req, res) => {
+  try {
+    const los = await LO.getAllLO();
+    res.status(200).json({
+      status: "success",
+      data: los,
+      message: "LOs fetched successfully.",
+    });
+  } catch (error) {
+    console.error("Error fetching LOs:", error);
+    res.status(500).json({
+      status: "error",
+      message: "Internal Server Error",
+    });
+  }
+};
+
+// Get LO by ID
+export const getLOById = async (req, res) => {
+  const { id_lo } = req.params;
+
+  try {
+    const lo = await LO.getLOById(id_lo);
+    if (lo) {
+      res.status(200).json({
+        status: "success",
+        data: lo,
+        message: "LO fetched successfully.",
+      });
+    } else {
+      res.status(404).json({
+        status: "error",
+        message: "LO not found.",
+      });
+    }
+  } catch (error) {
+    console.error("Error fetching LO by ID:", error);
+    res.status(500).json({
+      status: "error",
+      message: "Internal Server Error",
+    });
+  }
+};
+
+// Get LO by ID PO
+export const getLOByIdPO = async (req, res) => {
+  const { id_po } = req.params;
+
+  try {
+    const los = await LO.getLOByIdPO(id_po);
+    if (los.length > 0) {
+      res.status(200).json({
+        status: "success",
+        data: los,
+        message: "LOs fetched successfully by PO ID.",
+      });
+    } else {
+      res.status(404).json({
+        status: "error",
+        message: "No LOs found for the given PO ID.",
+      });
+    }
+  } catch (error) {
+    console.error("Error fetching LOs by PO ID:", error);
+    res.status(500).json({
+      status: "error",
+      message: "Internal Server Error",
+    });
+  }
+};
+
+// Get LO by ID Kantor
+export const getLOByIdKantor = async (req, res) => {
+  const { id_kantor } = req.params;
+
+  try {
+    const los = await LO.getLOByIdKantor(id_kantor);
+    if (los.length > 0) {
+      res.status(200).json({
+        status: "success",
+        data: los,
+        message: "LOs fetched successfully by Kantor ID.",
+      });
+    } else {
+      res.status(404).json({
+        status: "error",
+        message: "No LOs found for the given Kantor ID.",
+      });
+    }
+  } catch (error) {
+    console.error("Error fetching LOs by Kantor ID:", error);
+    res.status(500).json({
+      status: "error",
+      message: "Internal Server Error",
+    });
+  }
+};
+
+// Add a new LO
+export const addLO = async (req, res) => {
+  const loData = req.body;
+
+  try {
+    const newLO = await LO.addLO(loData);
+    res.status(201).json({
+      status: "success",
+      data: newLO,
+      message: "LO created successfully.",
+    });
+  } catch (error) {
+    console.error("Error creating LO:", error);
+    res.status(500).json({
+      status: "error",
+      message: "Internal Server Error",
+    });
+  }
+};
+
+// Update LO
+export const updateLO = async (req, res) => {
+  const { id_lo } = req.params;
+  const loData = req.body;
+
+  try {
+    const updatedLO = await LO.updateLO(id_lo, loData);
+    if (updatedLO) {
+      res.status(200).json({
+        status: "success",
+        data: updatedLO,
+        message: "LO updated successfully.",
+      });
+    } else {
+      res.status(404).json({
+        status: "error",
+        message: "LO not found.",
+      });
+    }
+  } catch (error) {
+    console.error("Error updating LO:", error);
+    res.status(500).json({
+      status: "error",
+      message: "Internal Server Error",
+    });
+  }
+};
+
+// Delete LO
+export const deleteLO = async (req, res) => {
+  const { id_lo } = req.params;
+
+  try {
+    const deleted = await LO.deleteLO(id_lo);
+    if (deleted) {
+      res.status(200).json({
+        status: "success",
+        message: "LO deleted successfully.",
+      });
+    } else {
+      res.status(404).json({
+        status: "error",
+        message: "LO not found.",
+      });
+    }
+  } catch (error) {
+    console.error("Error deleting LO:", error);
+    res.status(500).json({
+      status: "error",
+      message: "Internal Server Error",
+    });
+  }
+};
