@@ -6,8 +6,7 @@ const Kecamatan = {
     const [results] = await sequelize.query(`
       SELECT 
         kecamatan.id_kecamatan, 
-        kecamatan.id_kabupaten_kota, 
-        kecamatan.kode_kecamatan, 
+        kecamatan.id_kabupaten_kota,
         kecamatan.nama_kecamatan, 
         kabupaten_kota.nama_kabupaten_kota
       FROM 
@@ -24,8 +23,7 @@ const Kecamatan = {
       `
       SELECT 
         kecamatan.id_kecamatan, 
-        kecamatan.id_kabupaten_kota, 
-        kecamatan.kode_kecamatan, 
+        kecamatan.id_kabupaten_kota,
         kecamatan.nama_kecamatan, 
         kabupaten_kota.nama_kabupaten_kota
       FROM 

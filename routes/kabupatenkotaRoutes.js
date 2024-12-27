@@ -8,21 +8,18 @@ const router = express.Router();
 router.get(
   "/kabupatenkota",
   authMiddleware.authenticate,
-  authMiddleware.authorizeRole([1,2,3]),
+  authMiddleware.authorizeRole([1, 2, 3]),
   kabupatenkotaController.getAllKabupatenKota
 );
 
 router.get(
   "/kabupatenkota/:id_provinsi",
   authMiddleware.authenticate,
-  authMiddleware.authorizeRole([1,2,3]),
+  authMiddleware.authorizeRole([1, 2, 3]),
   kabupatenkotaController.getKabupatenKotaByIdProvinsi
 );
 
 // Routes untuk pengembangan (tanpa otentikasi dan otorisasi)
 router.get("/dev/kabupatenkota", kabupatenkotaController.getAllKabupatenKota);
-router.get(
-  "/dev/kabupatenkota/:id_provinsi",
-  kabupatenkotaController.getKabupatenKotaByIdProvinsi
-);
+router.get("/dev/kabupatenkota/:id_provinsi", kabupatenkotaController.getKabupatenKotaByIdProvinsi);
 export default router;

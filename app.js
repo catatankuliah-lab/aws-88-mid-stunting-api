@@ -2,6 +2,11 @@ import express from "express";
 import cors from "cors";
 import sequelize from "./config/config.js";
 import userRoutes from "./routes/userRoutes.js";
+import provinsiRoutes from "./routes/provinsiRoutes.js";
+import kabupatenkotaRoutes from "./routes/kabupatenkotaRoutes.js";
+import kecamatanRoutes from "./routes/kecamatanRoutes.js";
+import desaKelurahanRoutes from "./routes/desaKelurahanRoutes.js";
+import kantorRoutes from "./routes/kantorRoutes.js";
 
 const app = express();
 const PORT = process.env.PORT || 3089;
@@ -25,11 +30,11 @@ const init = async () => {
         // app.use("/api", authRoutes);
         // app.use("/api", roleRoutes);
         app.use("/api/v1", userRoutes);
-        // app.use("/api", kantorRoutes);
-        // app.use("/api", provinsiRoutes);
-        // app.use("/api", kabupatenkotaRoutes);
-        // app.use("/api", kecamatanRoutes);
-        // app.use("/api", desaKelurahanRoutes);
+        app.use("/api/v1", kantorRoutes);
+        app.use("/api/v1", provinsiRoutes);
+        app.use("/api/v1", kabupatenkotaRoutes);
+        app.use("/api/v1", kecamatanRoutes);
+        app.use("/api/v1", desaKelurahanRoutes);
         // app.use("/api", gudangRoutes);
         // app.use("/api", januariDttRoutes);
         // app.use("/api", alokasiRoutes);

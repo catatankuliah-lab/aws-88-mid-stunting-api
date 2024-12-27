@@ -6,7 +6,6 @@ const DesaKelurahan = {
       SELECT 
         desa_kelurahan.id_desa_kelurahan, 
         desa_kelurahan.id_kecamatan, 
-        desa_kelurahan.kode_desa_kelurahan, 
         desa_kelurahan.nama_desa_kelurahan, 
         kecamatan.nama_kecamatan
       FROM 
@@ -23,7 +22,6 @@ const DesaKelurahan = {
       SELECT 
         desa_kelurahan.id_desa_kelurahan, 
         desa_kelurahan.id_kecamatan, 
-        desa_kelurahan.kode_desa_kelurahan, 
         desa_kelurahan.nama_desa_kelurahan, 
         kecamatan.nama_kecamatan
       FROM 
