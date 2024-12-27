@@ -16,5 +16,17 @@ Follow these steps to set up the project on your local machine:
 
 1. **Clone the repository**:
    First, clone the repository using Git:
-   ```bash
+    ```bash
    git clone https://github.com/catatankuliah-lab/aws-88-mid-stunting-api.git
+
+2. **Navigate into the project directory**:
+    ```bash
+   cd aws-88-mid-stunting-api
+
+3. **Install dependencies**:
+    ```bash
+   npm install
+
+4. **Start**:
+    ```bash
+   npm start
