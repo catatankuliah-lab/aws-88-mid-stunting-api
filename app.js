@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import sequelize from "./config/config.js";
 import userRoutes from "./routes/userRoutes.js";
+import authRoutes from "./routes/authRoutes.js";
 import provinsiRoutes from "./routes/provinsiRoutes.js";
 import kabupatenkotaRoutes from "./routes/kabupatenkotaRoutes.js";
 import kecamatanRoutes from "./routes/kecamatanRoutes.js";
