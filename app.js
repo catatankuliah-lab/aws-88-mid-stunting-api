@@ -22,7 +22,7 @@ const init = async () => {
         console.log("Connected to the database.");
         await sequelize.sync();
         console.log("Database & tables created!");
-        // app.use("/api", authRoutes);
+        app.use("/api/v1", authRoutes);
         // app.use("/api", roleRoutes);
         app.use("/api/v1", userRoutes);
         // app.use("/api", kantorRoutes);
