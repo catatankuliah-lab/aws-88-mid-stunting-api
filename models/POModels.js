@@ -159,34 +159,59 @@ const PO = {
 
   getFilteredPO: async (filters) => {
     try {
-      let query = "SELECT * FROM po WHERE 1=1";
+      let query = `SELECT 
+      kantor.id_kantor,
+        kantor.nama_kantor,
+        po.id_po,
+        po.nomor_po,
+        po.tanggal_po,
+        po.customer,
+        po.titik_muat,
+        po.titik_bongkar,
+        po.jam_stand_by,
+        po.status_po,
+        JSON_OBJECT(
+          'ayam', SUM(CASE WHEN item_po.jenis_muatan = 'ayam' THEN item_po.jumlah_muatan ELSE 0 END),
+          'telur', SUM(CASE WHEN item_po.jenis_muatan = 'telur' THEN item_po.jumlah_muatan ELSE 0 END)
+        ) AS jenis_muatan_json
+      FROM
+      po
+      JOIN 
+    item_po ON po.id_po = item_po.id_po
+      JOIN 
+    kantor ON po.id_kantor = kantor.id_kantor WHERE 1 = 1`;
       const params = [];
 
       // Filter berdasarkan id_alokasi jika ada
       if (filters.id_alokasi) {
-        query += " AND id_alokasi = ?";
+        query += " AND po.id_alokasi = ?";
         params.push(filters.id_alokasi);
       }
 
       // Filter berdasarkan id_kantor jika ada dan valid
       if (filters.id_kantor && filters.id_kantor !== null && filters.id_kantor !== 'null') {
-        query += " AND id_kantor = ?";
+        query += " AND po.id_kantor = ?";
         params.push(filters.id_kantor);
       }
 
-      if (filters.tanggal_po.$gte != "Invalid Date"|| filters.tanggal_po.$lte!="Invalid Date") {
+      if (filters.tanggal_po.$gte != "Invalid Date" || filters.tanggal_po.$lte != "Invalid Date") {
         if (filters.tanggal_po.$gte && filters.tanggal_po.$lte) {
-          query += " AND tanggal_po BETWEEN ? AND ?";
+          query += " AND po.tanggal_po BETWEEN ? AND ?";
           params.push(filters.tanggal_po.$gte);
           params.push(filters.tanggal_po.$lte);
         } else if (filters.tanggal_po.$gte) {
-          query += " AND tanggal_po >= ?";
+          query += " AND po.tanggal_po >= ?";
           params.push(filters.tanggal_po.$gte);
         } else if (filters.tanggal_po.$lte) {
-          query += " AND tanggal_po <= ?";
+          query += " AND po.tanggal_po <= ?";
           params.push(filters.tanggal_po.$lte);
         }
       }
+
+      query += `GROUP BY 
+    kantor.id_kantor, kantor.nama_kantor, po.id_po, po.nomor_po, po.tanggal_po, 
+    po.customer, po.titik_muat, po.titik_bongkar, po.jam_stand_by, po.status_po;
+`;
 
       // Menjalankan query menggunakan sequelize.query
       const [poList] = await sequelize.query(query, {
