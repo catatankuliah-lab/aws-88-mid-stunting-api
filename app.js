@@ -31,7 +31,7 @@ const init = async () => {
         console.log("Connected to the database.");
         await sequelize.sync();
         console.log("Database & tables created!");
-        // app.use("/api", authRoutes);
+        app.use("/api", authRoutes);
         // app.use("/api", roleRoutes);
         app.use("/api/v1", userRoutes);
         app.use("/api/v1", kantorRoutes);
@@ -43,7 +43,6 @@ const init = async () => {
         app.use("/api/v1", moveRoutes);
         app.use("/api/v1", itempoRoutes);
         app.use("/api/v1", loRoutes);
-       
 
         app.listen(PORT, () => {
             console.log(`Server is running on port ${PORT}`);
