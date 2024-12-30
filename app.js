@@ -1,7 +1,9 @@
 import express from "express";
 import cors from "cors";
 import sequelize from "./config/config.js";
+import authRoutes from "./routes/authRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
+import alokasiRoutes from "./routes/alokasiRoutes.js";
 import provinsiRoutes from "./routes/provinsiRoutes.js";
 import kabupatenkotaRoutes from "./routes/kabupatenkotaRoutes.js";
 import kecamatanRoutes from "./routes/kecamatanRoutes.js";
@@ -31,8 +33,8 @@ const init = async () => {
         console.log("Connected to the database.");
         await sequelize.sync();
         console.log("Database & tables created!");
-        app.use("/api", authRoutes);
-        // app.use("/api", roleRoutes);
+        app.use("/api/v1", authRoutes);
+        app.use("/api/v1", alokasiRoutes);
         app.use("/api/v1", userRoutes);
         app.use("/api/v1", kantorRoutes);
         app.use("/api/v1", provinsiRoutes);

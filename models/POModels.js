@@ -156,6 +156,49 @@ const PO = {
     );
     return result.affectedRows > 0;
   },
+
+  getFilteredPO: async (filters) => {
+    try {
+      let query = "SELECT * FROM po WHERE 1=1";
+      const params = [];
+
+      // Filter berdasarkan id_alokasi jika ada
+      if (filters.id_alokasi) {
+        query += " AND id_alokasi = ?";
+        params.push(filters.id_alokasi);
+      }
+
+      // Filter berdasarkan id_kantor jika ada dan valid
+      if (filters.id_kantor && filters.id_kantor !== null && filters.id_kantor !== 'null') {
+        query += " AND id_kantor = ?";
+        params.push(filters.id_kantor);
+      }
+
+      if (filters.tanggal_po.$gte != "Invalid Date"|| filters.tanggal_po.$lte!="Invalid Date") {
+        if (filters.tanggal_po.$gte && filters.tanggal_po.$lte) {
+          query += " AND tanggal_po BETWEEN ? AND ?";
+          params.push(filters.tanggal_po.$gte);
+          params.push(filters.tanggal_po.$lte);
+        } else if (filters.tanggal_po.$gte) {
+          query += " AND tanggal_po >= ?";
+          params.push(filters.tanggal_po.$gte);
+        } else if (filters.tanggal_po.$lte) {
+          query += " AND tanggal_po <= ?";
+          params.push(filters.tanggal_po.$lte);
+        }
+      }
+
+      // Menjalankan query menggunakan sequelize.query
+      const [poList] = await sequelize.query(query, {
+        replacements: params, // Pastikan parameter menggantikan tanda tanya dalam query
+        type: sequelize.QueryTypes.SELECT, // Menentukan jenis query yang dijalankan
+      });
+      return poList;
+    } catch (error) {
+      console.error("Error fetching filtered purchase orders:", error);
+      throw error;
+    }
+  }
 };
 
 export default PO;

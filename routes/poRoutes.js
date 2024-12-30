@@ -13,6 +13,13 @@ router.get(
 );
 
 router.get(
+  "/po/filter",
+  authMiddleware.authenticate,
+  authMiddleware.authorizeRole([1, 2, 3]), // Sesuaikan peran yang diizinkan
+  poController.getFilteredPO
+);
+
+router.get(
   "/po/:id_po",
   authMiddleware.authenticate,
   authMiddleware.authorizeRole([1, 2, 3]),
