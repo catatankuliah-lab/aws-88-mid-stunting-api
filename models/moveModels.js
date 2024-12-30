@@ -1,4 +1,5 @@
 import sequelize from "../config/config.js";
+import { getFilteredMove } from "../controllers/moveController.js";
 
 const Move = {
   // Get all Moves
@@ -157,6 +158,80 @@ const Move = {
     );
     return result.affectedRows > 0;
   },
+
+  getFilteredMove: async (filters) => {
+    try {
+      let query = `SELECT 
+    po.tanggal_po,
+    kantor.nama_kantor,
+    po.customer,
+    po.titik_muat,
+    po.titik_bongkar,
+    po.jam_stand_by,
+    item_po.jenis_muatan,
+    item_po.jumlah_muatan,
+    move.status_move,
+    move.nomor_move
+FROM 
+    move
+JOIN 
+    item_po ON move.id_item_po = item_po.id_item_po
+JOIN 
+    po ON item_po.id_po = po.id_po
+JOIN 
+    kantor ON po.id_kantor = kantor.id_kantor`;
+      ;
+      const params = [];
+
+      // Filter berdasarkan id_alokasi jika ada
+      if (filters.id_alokasi) {
+        query += " AND po.id_alokasi = ?";
+        params.push(filters.id_alokasi);
+      }
+
+      // Filter berdasarkan id_kantor jika ada dan valid
+      if (filters.id_kantor && filters.id_kantor !== null && filters.id_kantor !== 'null') {
+        query += " AND po.id_kantor = ?";
+        params.push(filters.id_kantor);
+      }
+
+      if (filters.tanggal_move.$gte != "Invalid Date" || filters.tanggal_move.$lte != "Invalid Date") {
+        if (filters.tanggal_move.$gte && filters.tanggal_move.$lte) {
+          query += " AND move.tanggal_move BETWEEN ? AND ?";
+          params.push(filters.tanggal_move.$gte);
+          params.push(filters.tanggal_move.$lte);
+        } else if (filters.tanggal_move.$gte) {
+          query += " AND move.tanggal_move >= ?";
+          params.push(filters.tanggal_move.$gte);
+        } else if (filters.tanggal_move.$lte) {
+          query += " AND move.tanggal_move <= ?";
+          params.push(filters.tanggal_move.$lte);
+        }
+      }
+
+      //   query += `GROUP BY 
+      // po.tanggal_po,
+      // kantor.nama_kantor,
+      // po.customer,
+      // po.titik_muat,
+      // po.titik_bongkar,
+      // po.jam_stand_by,
+      // item_po.jenis_muatan,
+      // item_po.jumlah_muatan,
+      // move.status_move,
+      // move.nomor_move;`;
+
+      // Menjalankan query menggunakan sequelize.query
+      const [movelist] = await sequelize.query(query, {
+        replacements: params, // Pastikan parameter menggantikan tanda tanya dalam query
+        type: sequelize.QueryTypes.SELECT, // Menentukan jenis query yang dijalankan
+      });
+      return movelist;
+    } catch (error) {
+      console.error("Error fetching filtered purchase orders:", error);
+      throw error;
+    }
+  }
 };
 
 export default Move;

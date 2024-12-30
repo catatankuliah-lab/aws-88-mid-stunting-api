@@ -145,3 +145,47 @@ export const deleteMove = async (req, res) => {
     });
   }
 };
+
+export const getFilteredMove = async (req, res) => {
+  const { id_alokasi, id_kantor, tanggal_awal, tanggal_akhir } = req.query;
+
+  try {
+    const filters = {};
+
+    if (id_alokasi) {
+      filters.id_alokasi = id_alokasi;
+    }
+
+    if (id_kantor) {
+      filters.id_kantor = id_kantor;
+    }
+
+    if (tanggal_awal && tanggal_akhir) {
+      filters.tanggal_move = {
+        $gte: new Date(tanggal_awal),
+        $lte: new Date(tanggal_akhir),
+      };
+    }
+
+    const movelist = await Move.getFilteredMove(filters);
+
+    if (movelist) {
+      res.status(200).json({
+        status: "success",
+        data: movelist,
+        message: "Filtered purchase orders fetched successfully.",
+      });
+    } else {
+      res.status(404).json({
+        status: "error",
+        message: "No purchase orders found for the given filters.",
+      });
+    }
+  } catch (error) {
+    console.error("Error fetching filtered purchase orders:", error);
+    res.status(500).json({
+      status: "error",
+      message: "Internal Server Error",
+    });
+  }
+};

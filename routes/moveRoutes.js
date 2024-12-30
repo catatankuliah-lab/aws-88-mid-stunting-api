@@ -13,6 +13,13 @@ router.get(
 );
 
 router.get(
+  "/move/filter",
+  authMiddleware.authenticate,
+  authMiddleware.authorizeRole([1, 2, 3]), // Sesuaikan peran yang diizinkan
+  moveController.getFilteredMove
+);
+
+router.get(
   "/move/:id_move",
   authMiddleware.authenticate,
   authMiddleware.authorizeRole([1, 2, 3]),
