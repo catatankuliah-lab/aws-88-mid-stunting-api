@@ -12,14 +12,12 @@ export const login = async (req, res) => {
 
   try {
     const [user] = await sequelize.query(
-      `SELECT user.*, role.*, gudang.nama_gudang, kantor.nama_kantor FROM
+      `SELECT user.*, role.*, kantor.nama_kantor FROM
         user
       LEFT JOIN
         role ON user.id_role = role.id_role 
       LEFT JOIN
         kantor ON user.id_kantor = kantor.id_kantor
-      LEFT JOIN
-        gudang ON user.id_gudang = gudang.id_gudang
       WHERE
         username = :username`,
       {
