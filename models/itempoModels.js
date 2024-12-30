@@ -18,7 +18,8 @@ const ItemPO = {
         po.titik_muat,
         po.titik_bongkar,
         po.jam_stand_by,
-        po.status_po
+        po.status_po,
+        po.nomor_po
       FROM 
         item_po
       LEFT JOIN 
@@ -78,7 +79,8 @@ const ItemPO = {
         po.titik_muat,
         po.titik_bongkar,
         po.jam_stand_by,
-        po.status_po
+        po.status_po,
+        po.nomor_po
       FROM 
         item_po
       LEFT JOIN 
