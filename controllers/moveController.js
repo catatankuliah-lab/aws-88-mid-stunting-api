@@ -1,4 +1,4 @@
-import Move from "../models/MoveModels.js";
+import Move from "../models/moveModels.js";
 
 // Get all Moves
 export const getAllMoves = async (req, res) => {

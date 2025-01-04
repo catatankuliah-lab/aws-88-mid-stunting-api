@@ -80,9 +80,14 @@ const ItemPO = {
         po.titik_bongkar,
         po.jam_stand_by,
         po.status_po,
-        po.nomor_po
+        po.nomor_po,
+        move.id_move,
+        move.nomor_move,
+        move.tanggal_move
       FROM 
         item_po
+      LEFT JOIN
+        move ON item_po.id_item_po = move.id_item_po
       LEFT JOIN 
         po ON item_po.id_po = po.id_po
       WHERE 
@@ -160,7 +165,7 @@ const ItemPO = {
           telpon_driver,
           jenis_muatan,
           jumlah_muatan,
-          id_item_po,
+          id_item_po
         ],
       }
     );

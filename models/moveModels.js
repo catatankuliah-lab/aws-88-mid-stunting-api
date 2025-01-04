@@ -37,6 +37,7 @@ const Move = {
       `
       SELECT 
         move.id_move,
+        move.nomor_move,
         move.id_item_po,
         move.tanggal_move,
         move.foto_move,
@@ -50,7 +51,8 @@ const Move = {
         po.customer,
         po.titik_muat,
         po.titik_bongkar,
-        po.tanggal_po
+        po.tanggal_po,
+        po.jam_stand_by
       FROM 
         move
       LEFT JOIN 
@@ -73,6 +75,7 @@ const Move = {
       `
       SELECT 
         move.id_move,
+        move.nomor_move,
         move.id_item_po,
         move.tanggal_move,
         move.foto_move,
@@ -86,6 +89,7 @@ const Move = {
         po.customer,
         po.titik_muat,
         po.titik_bongkar,
+        po.jam_stand_by,
         po.tanggal_po
       FROM 
         move
@@ -168,10 +172,17 @@ const Move = {
     po.titik_muat,
     po.titik_bongkar,
     po.jam_stand_by,
+    item_po.id_item_po,
     item_po.jenis_muatan,
     item_po.jumlah_muatan,
+    move.id_move,
     move.status_move,
-    move.nomor_move
+    move.tanggal_move,
+    move.nomor_move,
+    JSON_OBJECT(
+        'AYAM', SUM(CASE WHEN item_po.jenis_muatan = 'AYAM' THEN item_po.jumlah_muatan ELSE 0 END),
+        'TELUR', SUM(CASE WHEN item_po.jenis_muatan = 'TELUR' THEN item_po.jumlah_muatan ELSE 0 END)
+    ) AS jenis_muatan_json
 FROM 
     move
 JOIN 
@@ -209,17 +220,20 @@ JOIN
         }
       }
 
-      //   query += `GROUP BY 
-      // po.tanggal_po,
-      // kantor.nama_kantor,
-      // po.customer,
-      // po.titik_muat,
-      // po.titik_bongkar,
-      // po.jam_stand_by,
-      // item_po.jenis_muatan,
-      // item_po.jumlah_muatan,
-      // move.status_move,
-      // move.nomor_move;`;
+        query += `GROUP BY 
+    po.tanggal_po,
+    kantor.nama_kantor,
+    po.customer,
+    po.titik_muat,
+    po.titik_bongkar,
+    po.jam_stand_by,
+    item_po.id_item_po,
+    item_po.jenis_muatan,
+    item_po.jumlah_muatan,
+    move.id_move,
+    move.status_move,
+    move.tanggal_move,
+    move.nomor_move;`;
 
       // Menjalankan query menggunakan sequelize.query
       const [movelist] = await sequelize.query(query, {

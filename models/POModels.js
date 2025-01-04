@@ -41,7 +41,7 @@ const PO = {
         po.titik_bongkar,
         po.jam_stand_by,
         po.status_po,
-        alokasi.keterangan_alokasi,
+        alokasi.keterangan_alokasi, 
         kantor.nama_kantor,
         kantor.alamat_kantor
       FROM 
