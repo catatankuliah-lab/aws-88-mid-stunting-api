@@ -56,6 +56,7 @@ const LO = {
         lo.nama_driver,
         lo.telpon_driver,
         lo.file_lo,
+        lo.status_lo,
         alokasi.keterangan_alokasi,
         po.tanggal_po,
         po.customer,
@@ -303,10 +304,10 @@ const LO = {
         lo.file_lo;
       `;
 
-      // Menjalankan query menggunakan sequelize.query
+      
       const [loList] = await sequelize.query(query, {
-        replacements: params, // Pastikan parameter menggantikan tanda tanya dalam query
-        type: sequelize.QueryTypes.SELECT, // Menentukan jenis query yang dijalankan
+        replacements: params, 
+        type: sequelize.QueryTypes.SELECT, 
       });
       return loList;
     } catch (error) {

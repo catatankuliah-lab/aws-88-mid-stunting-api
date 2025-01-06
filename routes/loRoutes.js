@@ -1,15 +1,21 @@
 import express from "express";
-import * as loController from "../controllers/loController.js"; // Pastikan file controller sudah dibuat
-import * as authMiddleware from "../middlewares/authMiddleware.js"; // Pastikan middleware sudah tersedia
+import * as loController from "../controllers/loController.js";
+import * as authMiddleware from "../middlewares/authMiddleware.js";
 
 const router = express.Router();
 
-// Routes untuk LO dengan otentikasi dan otorisasi
 router.get(
   "/lo",
   authMiddleware.authenticate,
-  authMiddleware.authorizeRole([1, 2, 3]), // Sesuaikan peran yang diizinkan
+  authMiddleware.authorizeRole([1, 2, 3]),
   loController.getAllLO
+);
+
+router.get(
+  "/lo/filter",
+  authMiddleware.authenticate,
+  authMiddleware.authorizeRole([1, 2, 3]), // Sesuaikan peran yang diizinkan
+  loController.getFilteredLO
 );
 
 router.get(

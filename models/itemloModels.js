@@ -44,7 +44,7 @@ const ItemLO = {
         lo.tanggal_lo,
         lo.titik_muat,
         lo.jenis_mobil,
-        lo.nomol_mobil,
+        lo.nopol_mobil,
         lo.nama_driver,
         lo.telpon_driver,
         lo.file_lo
