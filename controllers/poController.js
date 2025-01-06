@@ -190,3 +190,24 @@ export const getFilteredPO = async (req, res) => {
     });
   }
 };
+
+// Get jumlah PO by Kantor ID
+export const getJumlahPOByKantor = async (req, res) => {
+  const { id_kantor } = req.params;
+
+  try {
+    const jumlahPO = await PO.getJumlahPOByKantor(id_kantor);
+
+    res.status(200).json({
+      status: "success",
+      data: { jumlah_po: jumlahPO },
+      message: `Jumlah Purchase Orders untuk Kantor ID ${id_kantor} berhasil diambil.`,
+    });
+  } catch (error) {
+    console.error("Error fetching jumlah PO by Kantor ID:", error);
+    res.status(500).json({
+      status: "error",
+      message: "Internal Server Error",
+    });
+  }
+};

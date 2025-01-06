@@ -94,19 +94,19 @@ const PO = {
     return results;
   },
 
-  // Add PO
   addPO: async (poData) => {
-    const { id_alokasi, id_kantor, tanggal_po, customer, titik_muat, titik_bongkar, jam_stand_by, status_po } = poData;
+    const { id_alokasi, id_kantor, nomor_po, tanggal_po, customer, titik_muat, titik_bongkar, jam_stand_by, status_po } = poData;
     const [result] = await sequelize.query(
       `
-      INSERT INTO po (id_alokasi, id_kantor, tanggal_po, customer, titik_muat, titik_bongkar, jam_stand_by, status_po)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    INSERT INTO po (id_alokasi, id_kantor, nomor_po, tanggal_po, customer, titik_muat, titik_bongkar, jam_stand_by, status_po)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
     `,
       {
-        replacements: [id_alokasi, id_kantor, tanggal_po, customer, titik_muat, titik_bongkar, jam_stand_by, status_po],
+        replacements: [id_alokasi, id_kantor, nomor_po, tanggal_po, customer, titik_muat, titik_bongkar, jam_stand_by, status_po],
       }
     );
-    return { id_po: result.insertId, ...poData };
+
+    return { result };
   },
 
   // Update PO
@@ -172,15 +172,15 @@ const PO = {
         po.jam_stand_by,
         po.status_po,
         JSON_OBJECT(
-          'ayam', SUM(CASE WHEN item_po.jenis_muatan = 'ayam' THEN item_po.jumlah_muatan ELSE 0 END),
-          'telur', SUM(CASE WHEN item_po.jenis_muatan = 'telur' THEN item_po.jumlah_muatan ELSE 0 END)
+        'ayam', COALESCE(SUM(CASE WHEN item_po.jenis_muatan = 'ayam' THEN item_po.jumlah_muatan ELSE 0 END), 0),
+        'telur', COALESCE(SUM(CASE WHEN item_po.jenis_muatan = 'telur' THEN item_po.jumlah_muatan ELSE 0 END), 0)
         ) AS jenis_muatan_json
       FROM
-      po
+        po
+      LEFT JOIN
+        item_po ON po.id_po = item_po.id_po
       JOIN 
-    item_po ON po.id_po = item_po.id_po
-      JOIN 
-    kantor ON po.id_kantor = kantor.id_kantor WHERE 1 = 1`;
+        kantor ON po.id_kantor = kantor.id_kantor WHERE 1 = 1`;
       const params = [];
 
       // Filter berdasarkan id_alokasi jika ada
@@ -210,12 +210,11 @@ const PO = {
       }
 
       query += `GROUP BY 
-    kantor.id_kantor, kantor.nama_kantor, po.id_po, po.nomor_po, po.tanggal_po, 
-    po.customer, po.titik_muat, po.titik_bongkar, po.jam_stand_by, po.status_po;
+      po.id_po, po.nomor_po, po.tanggal_po;
 `;
 
       // Menjalankan query menggunakan sequelize.query
-      const [poList] = await sequelize.query(query, {
+      const poList = await sequelize.query(query, {
         replacements: params, // Pastikan parameter menggantikan tanda tanya dalam query
         type: sequelize.QueryTypes.SELECT, // Menentukan jenis query yang dijalankan
       });
@@ -224,7 +223,26 @@ const PO = {
       console.error("Error fetching filtered purchase orders:", error);
       throw error;
     }
-  }
+  },
+
+  // Get the count of PO by Kantor ID
+  getJumlahPOByKantor: async (id_kantor) => {
+    const [results] = await sequelize.query(
+      `
+    SELECT 
+      COUNT(*) AS jumlah_po
+    FROM 
+      po
+    WHERE 
+      id_kantor = ?
+    `,
+      {
+        replacements: [id_kantor],
+      }
+    );
+    return results[0].jumlah_po;
+  },
+
 };
 
 export default PO;

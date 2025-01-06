@@ -20,6 +20,13 @@ router.get(
 );
 
 router.get(
+  "/po/jumlah/kantor/:id_kantor",
+  authMiddleware.authenticate,
+  authMiddleware.authorizeRole([1, 2, 3]), // Sesuaikan peran yang diizinkan
+  poController.getJumlahPOByKantor
+);
+
+router.get(
   "/po/:id_po",
   authMiddleware.authenticate,
   authMiddleware.authorizeRole([1, 2, 3]),
