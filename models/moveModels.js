@@ -98,8 +98,7 @@ const Move = {
       LEFT JOIN 
         po ON item_po.id_po = po.id_po
       WHERE 
-        move.id_item_po = ?
-    `,
+        move.id_item_po = ?`,
       {
         replacements: [id_item_po],
       }
@@ -220,7 +219,7 @@ JOIN
         }
       }
 
-        query += `GROUP BY 
+      query += `GROUP BY 
     po.tanggal_po,
     kantor.nama_kantor,
     po.customer,
