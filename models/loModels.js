@@ -13,10 +13,11 @@ const LO = {
         lo.tanggal_lo,
         lo.titik_muat AS lo_titik_muat,
         lo.jenis_mobil,
-        lo.nomol_mobil,
+        lo.nopol_mobil,
         lo.nama_driver,
         lo.telpon_driver,
         lo.file_lo,
+        lo.status_lo,
         alokasi.keterangan_alokasi,
         po.tanggal_po,
         po.customer,
@@ -51,7 +52,7 @@ const LO = {
         lo.tanggal_lo,
         lo.titik_muat AS lo_titik_muat,
         lo.jenis_mobil,
-        lo.nomol_mobil,
+        lo.nopol_mobil,
         lo.nama_driver,
         lo.telpon_driver,
         lo.file_lo,
@@ -140,7 +141,7 @@ const LO = {
       tanggal_lo,
       titik_muat,
       jenis_mobil,
-      nomol_mobil,
+      nopol_mobil,
       nama_driver,
       telpon_driver,
       file_lo,
@@ -149,7 +150,7 @@ const LO = {
       `
       INSERT INTO lo (
         id_alokasi, id_po, id_kantor, nomor_lo, tanggal_lo, titik_muat,
-        jenis_mobil, nomol_mobil, nama_driver, telpon_driver, file_lo
+        jenis_mobil, nopol_mobil, nama_driver, telpon_driver, file_lo
       )
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `,
@@ -162,7 +163,7 @@ const LO = {
           tanggal_lo,
           titik_muat,
           jenis_mobil,
-          nomol_mobil,
+          nopol_mobil,
           nama_driver,
           telpon_driver,
           file_lo,
@@ -182,7 +183,7 @@ const LO = {
       tanggal_lo,
       titik_muat,
       jenis_mobil,
-      nomol_mobil,
+      nopol_mobil,
       nama_driver,
       telpon_driver,
       file_lo,
@@ -192,7 +193,7 @@ const LO = {
       UPDATE lo
       SET 
         id_alokasi = ?, id_po = ?, id_kantor = ?, nomor_lo = ?, tanggal_lo = ?, titik_muat = ?,
-        jenis_mobil = ?, nomol_mobil = ?, nama_driver = ?, telpon_driver = ?, file_lo = ?
+        jenis_mobil = ?, nopol_mobil = ?, nama_driver = ?, telpon_driver = ?, file_lo = ?
       WHERE 
         id_lo = ?
     `,
@@ -205,7 +206,7 @@ const LO = {
           tanggal_lo,
           titik_muat,
           jenis_mobil,
-          nomol_mobil,
+          nopol_mobil,
           nama_driver,
           telpon_driver,
           file_lo,
@@ -227,6 +228,93 @@ const LO = {
     );
     return result.affectedRows > 0;
   },
+
+  getFilteredLO: async (filters) => {
+    try {
+      let query = `SELECT 
+          kantor.id_kantor,
+          kantor.nama_kantor,
+          lo.id_lo,
+          lo.id_alokasi,
+          lo.id_po,
+          lo.id_kantor,
+          lo.nomor_lo,
+          lo.tanggal_lo,
+          lo.titik_muat,
+          lo.jenis_mobil,
+          lo.nopol_mobil,
+          lo.nama_driver,
+          lo.telpon_driver,
+          lo.file_lo,
+          lo.status_lo,
+          JSON_OBJECT(
+              'ayam', SUM(CASE WHEN item_lo.jenis_muatan = 'AYAM' THEN item_lo.jumlah_muatan_ayam ELSE 0 END),
+              'telur', SUM(CASE WHEN item_lo.jenis_muatan = 'TELUR' THEN item_lo.jumlah_muatan_telur ELSE 0 END)
+          ) AS jenis_muatan_json
+          FROM
+              lo
+          JOIN 
+              item_lo ON lo.id_lo = item_lo.id_lo
+          JOIN 
+              kantor ON lo.id_kantor = kantor.id_kantor
+          WHERE 1 = 1`;
+      const params = [];
+
+      // Filter berdasarkan id_alokasi jika ada
+      if (filters.id_alokasi) {
+        query += " AND lo.id_alokasi = ?";
+        params.push(filters.id_alokasi);
+      }
+
+      // Filter berdasarkan id_kantor jika ada dan valid
+      if (filters.id_kantor && filters.id_kantor !== null && filters.id_kantor !== 'null') {
+        query += " AND lo.id_kantor = ?";
+        params.push(filters.id_kantor);
+      }
+
+      if (filters.tanggal_lo.$gte != "Invalid Date" || filters.tanggal_lo.$lte != "Invalid Date") {
+        if (filters.tanggal_lo.$gte && filters.tanggal_lo.$lte) {
+          query += " AND lo.tanggal_lo BETWEEN ? AND ?";
+          params.push(filters.tanggal_lo.$gte);
+          params.push(filters.tanggal_lo.$lte);
+        } else if (filters.tanggal_lo.$gte) {
+          query += " AND lo.tanggal_lo >= ?";
+          params.push(filters.tanggal_lo.$gte);
+        } else if (filters.tanggal_lo.$lte) {
+          query += " AND lo.tanggal_lo <= ?";
+          params.push(filters.tanggal_lo.$lte);
+        }
+      }
+
+      query += `GROUP BY 
+        kantor.id_kantor,
+        kantor.nama_kantor,
+        lo.id_lo,
+        lo.id_alokasi,
+        lo.id_po,
+        lo.id_kantor,
+        lo.nomor_lo,
+        lo.tanggal_lo,
+        lo.titik_muat,
+        lo.jenis_mobil,
+        lo.nopol_mobil,
+        lo.nama_driver,
+        lo.telpon_driver,
+        lo.file_lo;
+      `;
+
+      // Menjalankan query menggunakan sequelize.query
+      const [loList] = await sequelize.query(query, {
+        replacements: params, // Pastikan parameter menggantikan tanda tanya dalam query
+        type: sequelize.QueryTypes.SELECT, // Menentukan jenis query yang dijalankan
+      });
+      return loList;
+    } catch (error) {
+      console.error("Error fetching filtered loading orders:", error);
+      throw error;
+    }
+  }
+
 };
 
 export default LO;
