@@ -8,7 +8,7 @@ const router = express.Router();
 router.get(
   "/kantor",
   authMiddleware.authenticate,
-  authMiddleware.authorizeRole([1, 9]),
+  authMiddleware.authorizeRole([1, 2]),
   kantorController.getAllKantors
 );
 
