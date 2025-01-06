@@ -47,12 +47,24 @@ const ItemLO = {
         lo.nopol_mobil,
         lo.nama_driver,
         lo.telpon_driver,
-        lo.file_lo
-      FROM 
+        lo.file_lo,
+				desa_kelurahan.nama_desa_kelurahan,
+				kecamatan.nama_kecamatan,
+				kabupaten_kota.nama_kabupaten_kota,
+				provinsi.nama_provinsi
+      FROM
         item_lo
-      LEFT JOIN 
+      LEFT JOIN
         lo ON item_lo.id_lo = lo.id_lo
-      WHERE 
+			LEFT JOIN
+        desa_kelurahan ON item_lo.id_desa_kelurahan = desa_kelurahan.id_desa_kelurahan
+			LEFT JOIN
+        kecamatan ON desa_kelurahan.id_kecamatan = kecamatan.id_kecamatan
+			LEFT JOIN
+        kabupaten_kota ON kecamatan.id_kabupaten_kota = kabupaten_kota.id_kabupaten_kota
+			LEFT JOIN
+        provinsi ON kabupaten_kota.id_provinsi = provinsi.id_provinsi
+      WHERE
         item_lo.id_lo = ?
     `,
       { replacements: [id_lo] }

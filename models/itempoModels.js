@@ -90,7 +90,7 @@ const ItemPO = {
         move ON item_po.id_item_po = move.id_item_po
       LEFT JOIN 
         po ON item_po.id_po = po.id_po
-      WHERE 
+      WHERE
         item_po.id_po = ?
     `,
       {
